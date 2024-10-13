@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stock-ticker
+spec:
+  # We're not in the cloud so just a node port will do
+  type: NodePort
+  selector:
+    app: stock-ticker
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+
+      # Use a consistent node port to make life easier.
+      nodePort: 30000

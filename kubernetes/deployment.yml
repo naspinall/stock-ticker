@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stock-ticker
+  labels:
+    app: stock-ticker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: stock-ticker
+  template:
+    metadata:
+      labels:
+        app: stock-ticker
+    spec:
+      containers:
+        - name: stock-ticker
+
+          # Always want to pull as I'm using the latest tag
+          imagePullPolicy: Always
+          image: docker.io/naspin/stock-ticker:latest
+
+          # Ensure the service is still running
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: 8000
+
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          # Ensure the service is ready to start receiving traffic.
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 2
+
+          ports:
+            - containerPort: 8000
+
+          # Passing configuration through a configmap
+          # API key should likely be passed via a secret but this is for fun.
+          env:
+            - name: STOCK_TICKER_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: stock-ticker
+                  key: api_key
+
+            - name: STOCK_TICKER_DEFAULT_DAY_COUNT
+              valueFrom:
+                configMapKeyRef:
+                  name: stock-ticker
+                  key: default_day_count
+
+            - name: STOCK_TICKER_DEFAULT_SYMBOL
+              valueFrom:
+                configMapKeyRef:
+                  name: stock-ticker
+                  key: default_symbol
+
+  # Only ever allow a single pod to be unavailable when doing a rolling update.
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
