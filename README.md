@@ -12,6 +12,20 @@ See `openapi.yml` for how to interact with the service.
 
 Run tests by running `go test`, not that there are many....
 
+### Building
+
+The build system is all in Docker or Podman
+
+Run
+
+```
+podman build . -t naspin/stock-ticker:latest
+podman push naspin/stock-ticker:latest
+```
+
+To build and push the changes
+
+
 ### Resilience I Had Time For
 
 Structured logging with `trace-ids` to make correlating requests simple across multiple users.

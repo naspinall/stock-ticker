@@ -12,7 +12,7 @@ FROM ubuntu
 
 COPY --from=builder /opt/stock-ticker /opt/stock-ticker
 
-# Base image doesn't have any CA certificates installed, so adding all the Google Trust Store CAs as that's what signs the stock ticker certificates.
+# Base image doesn't have any CA certificates installed, so adding all the Google Trust Store CAs as that's what signs the upstream certificates.
 COPY certificate-authorites/ca.crt /etc/ssl/certs/ca-certificates.crt
 
 CMD ["/opt/stock-ticker"]
