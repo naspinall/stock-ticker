@@ -6,7 +6,7 @@ Add the API key to the configuration map where indicated.
 
 Run in the following order
 
-````
+```
 kubectl apply -f config-map.yml
 kubectl apply -f deployment.yml
 kubectl apply -f service.yml
